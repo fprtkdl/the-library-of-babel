@@ -22,8 +22,8 @@
 - [x] 공략 샘플: Claude가 MAA copilot 형식으로 작성
 - [x] 설계 문서 승인: `docs/superpowers/specs/2026-11-04-stage-board-design.md`
 - [x] 구현 계획 작성: `docs/superpowers/plans/2026-11-04-stage-board.md` (Task 5개)
-- [ ] **구현** ← 지금 여기
-- [ ] 1-7 보드 프로토타입 구현
+- [x] 구현: 1-7 정적 보드 구현 완료, 브랜치 feat/stage-board
+- [ ] **최종 리뷰 및 브라우저 확인** ← 지금 여기
 
 ## 다음에 할 일
 
