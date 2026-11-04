@@ -9,7 +9,8 @@
     "lint": "eslint",
     "test": "vitest run",
     "sync": "tsx scripts/sync-gamedata.ts",
-    "prebuild": "npm run sync"
+    "sync:avatars": "tsx scripts/sync-avatars.ts",
+    "prebuild": "npm run sync:avatars"
   },
   "dependencies": {
     "next": "16.4.5",
