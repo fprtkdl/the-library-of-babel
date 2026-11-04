@@ -55,4 +55,15 @@ describe("toPlacements", () => {
   it("방향이 없거나 잘못되면 에러", () => {
     expect(() => toPlacements(copilot([{ name: "芬", location: [1, 0] }]), board, ops)).toThrow("잘못된 방향: 芬");
   });
+
+  it("상속 키(constructor 등)는 오퍼레이터로 취급하지 않는다", () => {
+    expect(() =>
+      toPlacements(copilot([{ name: "constructor", location: [1, 0], direction: "Down" }]), board, ops),
+    ).toThrow("알 수 없는 오퍼레이터: constructor");
+  });
+
+  it('type "部署"도 Deploy로 취급한다', () => {
+    const p = toPlacements(copilot([{ type: "部署", name: "芬", location: [1, 0], direction: "Down" }]), board, ops);
+    expect(p).toHaveLength(1);
+  });
 });

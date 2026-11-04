@@ -15,7 +15,7 @@ export function toPlacements(copilot: Copilot, board: StageBoard, operators: Rec
     .filter((a) => ["Deploy", "部署"].includes(a.type ?? "Deploy")) // MAA는 type 생략 시 Deploy
     .map((a, i) => {
       const name = a.name ?? "";
-      const charId = operators[name];
+      const charId = Object.hasOwn(operators, name) ? operators[name] : undefined;
       if (!charId) throw new Error(`알 수 없는 오퍼레이터: ${name}`);
       const [x, y] = a.location ?? [-1, -1];
       const tile = board.tiles[y]?.[x];
