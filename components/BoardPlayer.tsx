@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useState } from "react";
 import type { StageBoard as Board } from "@/lib/board";
-import { frameAt, type Member, type Step } from "@/lib/strategy";
+import { describeStep, frameAt, type Member, type Step } from "@/lib/strategy";
 import { StageBoard } from "./StageBoard";
 import { WaitingBench } from "./WaitingBench";
 import styles from "./BoardPlayer.module.css";
@@ -43,16 +43,20 @@ export function BoardPlayer({
         board={board}
         placements={field}
         avatars={avatarSet}
-        highlight={current?.kind === "deploy" ? current.placement.order : undefined}
+        highlight={current && current.kind !== "retreat" ? current.placement.order : undefined}
+        skill={current?.kind === "skill"}
         vacated={retreat}
       />
       <WaitingBench waiting={waiting} avatars={avatarSet} highlight={retreat?.name} />
+      <p className={styles.caption} aria-live="polite">
+        {current ? describeStep(current, step) : "0단계 · 배치 전"}
+      </p>
       <div className={styles.controls}>
         <button type="button" className="btn btn-ghost" onClick={() => move(-1)} disabled={step === 0}>
           <strong>◀ 이전</strong>
           <small>PREV</small>
         </button>
-        <span className={styles.count} aria-live="polite">
+        <span className={styles.count}>
           {step} / {total}
         </span>
         <button type="button" className="btn btn-primary" onClick={() => move(1)} disabled={step === total}>

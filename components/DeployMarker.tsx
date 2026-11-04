@@ -7,10 +7,12 @@ export function DeployMarker({
   placement: p,
   hasAvatar,
   active = false,
+  skill = false,
 }: {
   placement: Placement;
   hasAvatar: boolean;
   active?: boolean;
+  skill?: boolean;
 }) {
   return (
     <div className={active ? `${styles.marker} ${styles.active}` : styles.marker} role="img" aria-label={`${p.order}번 ${p.name}, ${DIRECTION_KO[p.direction]} 방향`}>
@@ -24,6 +26,11 @@ export function DeployMarker({
         {p.order}
       </span>
       <span className={`${styles.dir} ${styles[p.direction]}`} aria-hidden />
+      {skill && (
+        <span className={styles.skill} aria-hidden>
+          SKILL
+        </span>
+      )}
     </div>
   );
 }

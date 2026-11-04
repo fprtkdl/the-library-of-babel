@@ -16,3 +16,7 @@
 .Left { left: -8px; top: 50%; margin-top: -6px; border-right: 7px solid #fff; border-left: 0; }
 .Down { bottom: -8px; left: 50%; margin-left: -6px; border-top: 7px solid #fff; border-bottom: 0; }
 .Up { top: -8px; left: 50%; margin-left: -6px; border-bottom: 7px solid #fff; border-top: 0; }
+.skill {
+  position: absolute; bottom: -6px; right: -6px; z-index: 3; padding: 1px 3px;
+  background: var(--accent); color: var(--on-accent); font: 700 8px/1.2 var(--font-mono); letter-spacing: 0.08em;
+}

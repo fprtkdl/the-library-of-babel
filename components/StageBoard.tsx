@@ -8,12 +8,14 @@ export function StageBoard({
   placements,
   avatars,
   highlight,
+  skill = false,
   vacated,
 }: {
   board: Board;
   placements: Placement[];
   avatars: ReadonlySet<string>;
   highlight?: number;
+  skill?: boolean; // 강조된 배치가 스킬 사용 중
   vacated?: { x: number; y: number }; // 방금 철수한 칸
 }) {
   return (
@@ -24,7 +26,7 @@ export function StageBoard({
           const cls = [styles.tile, styles[tile.key], tile.height === "HIGHLAND" && styles.high].filter(Boolean).join(" ");
           return (
             <div key={`${x},${y}`} className={cls} title={`${tile.key} [${x}, ${y}]`}>
-              {p && <DeployMarker placement={p} hasAvatar={avatars.has(p.charId)} active={p.order === highlight} />}
+              {p && <DeployMarker placement={p} hasAvatar={avatars.has(p.charId)} active={p.order === highlight} skill={skill && p.order === highlight} />}
               {!p && vacated?.x === x && vacated?.y === y && <span className={styles.vacated}>철수</span>}
             </div>
           );

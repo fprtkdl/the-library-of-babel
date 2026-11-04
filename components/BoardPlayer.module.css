@@ -2,3 +2,7 @@
 .controls :global(.btn) { min-width: 0; }
 .controls :global(.btn:disabled) { opacity: 0.35; cursor: default; }
 .count { min-width: 56px; text-align: center; font: 700 16px/1 var(--font-mono); }
+.caption {
+  margin-top: 14px; padding: 8px 12px; min-height: 36px;
+  background: var(--dark-2); border-left: 3px solid var(--accent); font-size: 13px; line-height: 1.5;
+}
