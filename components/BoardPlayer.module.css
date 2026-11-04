@@ -1,0 +1,4 @@
+.controls { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-top: 14px; }
+.controls :global(.btn) { min-width: 0; }
+.controls :global(.btn:disabled) { opacity: 0.35; cursor: default; }
+.count { min-width: 56px; text-align: center; font: 700 16px/1 var(--font-mono); }

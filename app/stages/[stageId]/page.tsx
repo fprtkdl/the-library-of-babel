@@ -2,7 +2,7 @@ import { existsSync } from "node:fs";
 import path from "node:path";
 import { notFound } from "next/navigation";
 import { PageHeader } from "@/components/PageHeader";
-import { StageBoard } from "@/components/StageBoard";
+import { BoardPlayer } from "@/components/BoardPlayer";
 import type { StageBoard as Board } from "@/lib/board";
 import { toPlacements, type Copilot } from "@/lib/strategy";
 import board from "@/data/stages/main_01-07.json";
@@ -21,17 +21,15 @@ export default async function StagePage({ params }: { params: Promise<{ stageId:
 
   const placements = toPlacements(sample as Copilot, board as Board, operators);
   // shortcut: public/ 파일 검사는 빌드 시 prerender에서만 동작, 페이지가 동적 렌더링되면 sync 스크립트가 쓰는 매니페스트로 교체
-  const avatars = new Set(
-    placements
-      .map((p) => p.charId)
-      .filter((id) => existsSync(path.join(process.cwd(), "public/assets/avatar", `${id}.png`))),
-  );
+  const avatars = placements
+    .map((p) => p.charId)
+    .filter((id) => existsSync(path.join(process.cwd(), "public/assets/avatar", `${id}.png`)));
 
   return (
     <main>
       <PageHeader label="STAGE DATA / 01-07" title={`1-7 · ${sample.doc.title}`} sub={`배치 ${placements.length}`} />
       <section style={{ padding: 16 }}>
-        <StageBoard board={board as Board} placements={placements} avatars={avatars} />
+        <BoardPlayer board={board as Board} placements={placements} avatars={avatars} />
       </section>
       <footer className="label-en" style={{ padding: "0 16px 16px", color: "var(--line-2)", letterSpacing: 0 }}>
         비공식 팬 사이트. 데이터 출처: 명일방주 인게임 정보.

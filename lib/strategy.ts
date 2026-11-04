@@ -25,3 +25,8 @@ export function toPlacements(copilot: Copilot, board: StageBoard, operators: Rec
       return { order: i + 1, charId, name, x, y, direction: a.direction as Direction };
     });
 }
+
+// 단계 재생: step단계까지 놓인 배치 (0 = 빈 맵)
+export function placementsUpTo(placements: Placement[], step: number): Placement[] {
+  return placements.filter((p) => p.order <= step);
+}

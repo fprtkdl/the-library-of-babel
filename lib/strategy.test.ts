@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import type { StageBoard, Tile } from "./board";
-import { toPlacements, type Copilot } from "./strategy";
+import { placementsUpTo, toPlacements, type Copilot } from "./strategy";
 
 const road: Tile = { key: "tile_road", height: "LOWLAND", buildable: "MELEE" };
 const wall: Tile = { key: "tile_wall", height: "HIGHLAND", buildable: "RANGED" };
@@ -65,5 +65,22 @@ describe("toPlacements", () => {
   it('type "部署"도 Deploy로 취급한다', () => {
     const p = toPlacements(copilot([{ type: "部署", name: "芬", location: [1, 0], direction: "Down" }]), board, ops);
     expect(p).toHaveLength(1);
+  });
+});
+
+describe("placementsUpTo", () => {
+  const ps = toPlacements(
+    copilot([
+      { name: "克洛丝", location: [0, 0], direction: "Down" },
+      { name: "芬", location: [1, 1], direction: "Right" },
+    ]),
+    board,
+    ops,
+  );
+
+  it("순번이 step 이하인 배치만 남긴다", () => {
+    expect(placementsUpTo(ps, 0)).toEqual([]);
+    expect(placementsUpTo(ps, 1).map((p) => p.name)).toEqual(["克洛丝"]);
+    expect(placementsUpTo(ps, 2)).toHaveLength(2);
   });
 });
