@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import type { StageBoard, Tile } from "./board";
-import { placementsUpTo, toPlacements, type Copilot } from "./strategy";
+import { frameAt, toPlacements, toSteps, type Copilot } from "./strategy";
 
 const road: Tile = { key: "tile_road", height: "LOWLAND", buildable: "MELEE" };
 const wall: Tile = { key: "tile_wall", height: "HIGHLAND", buildable: "RANGED" };
@@ -68,19 +68,78 @@ describe("toPlacements", () => {
   });
 });
 
-describe("placementsUpTo", () => {
-  const ps = toPlacements(
-    copilot([
-      { name: "克洛丝", location: [0, 0], direction: "Down" },
-      { name: "芬", location: [1, 1], direction: "Right" },
-    ]),
-    board,
-    ops,
-  );
+const squad = [
+  { name: "克洛丝", charId: "char_124_kroos" },
+  { name: "芬", charId: "char_123_fang" },
+];
+const seq = copilot([
+  { name: "克洛丝", location: [0, 0], direction: "Down" },
+  { name: "芬", location: [1, 1], direction: "Right" },
+  { type: "Retreat", name: "芬" },
+  { type: "Skill", name: "克洛丝" },
+  { name: "芬", location: [2, 1], direction: "Left" },
+  { type: "Retreat", location: [0, 0] },
+]);
 
-  it("순번이 step 이하인 배치만 남긴다", () => {
-    expect(placementsUpTo(ps, 0)).toEqual([]);
-    expect(placementsUpTo(ps, 1).map((p) => p.name)).toEqual(["克洛丝"]);
-    expect(placementsUpTo(ps, 2)).toHaveLength(2);
+describe("toSteps", () => {
+  it("배치와 철수만 단계로, 재배치는 새 순번", () => {
+    const steps = toSteps(seq, board, ops);
+    expect(steps.map((s) => `${s.kind}:${s.placement.name}:${s.placement.order}`)).toEqual([
+      "deploy:克洛丝:1",
+      "deploy:芬:2",
+      "retreat:芬:2",
+      "deploy:芬:3",
+      "retreat:克洛丝:1",
+    ]);
+    expect(steps[3].placement).toMatchObject({ x: 2, y: 1, direction: "Left" });
+  });
+
+  it("toPlacements는 배치 단계만", () => {
+    expect(toPlacements(seq, board, ops).map((p) => p.order)).toEqual([1, 2, 3]);
+  });
+
+  it("필드에 없는 대상 철수는 에러", () => {
+    expect(() => toSteps(copilot([{ type: "Retreat", name: "芬" }]), board, ops)).toThrow("철수 대상 없음: 芬");
+    expect(() => toSteps(copilot([{ type: "Retreat", location: [1, 1] }]), board, ops)).toThrow("철수 대상 없음: [1, 1]");
+  });
+
+  it("이미 필드에 있는 오퍼레이터 재배치는 에러", () => {
+    const twice = copilot([
+      { name: "芬", location: [1, 1], direction: "Up" },
+      { name: "芬", location: [2, 1], direction: "Up" },
+    ]);
+    expect(() => toSteps(twice, board, ops)).toThrow("이미 배치됨: 芬");
+  });
+
+  it("점유된 칸 배치는 에러", () => {
+    const clash = copilot([
+      { name: "芬", location: [1, 1], direction: "Up" },
+      { name: "克洛丝", location: [1, 1], direction: "Up" },
+    ]);
+    expect(() => toSteps(clash, board, ops)).toThrow("칸 점유: 克洛丝 [1, 1]");
+  });
+});
+
+describe("frameAt", () => {
+  const steps = toSteps(seq, board, ops);
+
+  it("0단계: 필드 비어 있고 전원 대기", () => {
+    const f = frameAt(steps, squad, 0);
+    expect(f.field).toEqual([]);
+    expect(f.waiting.map((w) => `${w.name}:${w.state}`)).toEqual(["克洛丝:대기", "芬:대기"]);
+    expect(f.current).toBeUndefined();
+  });
+
+  it("철수 직후: 필드에서 빠지고 재배치 대기", () => {
+    const f = frameAt(steps, squad, 3);
+    expect(f.field.map((p) => p.name)).toEqual(["克洛丝"]);
+    expect(f.waiting.map((w) => `${w.name}:${w.state}`)).toEqual(["芬:재배치 대기"]);
+    expect(f.current?.kind).toBe("retreat");
+  });
+
+  it("재배치 후: 새 위치로 필드 복귀", () => {
+    const f = frameAt(steps, squad, 4);
+    expect(f.field.find((p) => p.name === "芬")).toMatchObject({ x: 2, y: 1, order: 3 });
+    expect(f.waiting).toEqual([]);
   });
 });
