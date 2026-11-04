@@ -8,6 +8,8 @@ import board from "@/data/stages/main_01-07.json";
 import operators from "@/data/operators.json";
 import sample from "@/data/strategies/main_01-07.sample.json";
 
+export const dynamicParams = false;
+
 export function generateStaticParams() {
   return [{ stageId: "main_01-07" }];
 }
@@ -17,6 +19,7 @@ export default async function StagePage({ params }: { params: Promise<{ stageId:
   if (stageId !== "main_01-07") notFound();
 
   const placements = toPlacements(sample as Copilot, board as Board, operators);
+  // shortcut: public/ 파일 검사는 빌드 시 prerender에서만 동작, 페이지가 동적 렌더링되면 sync 스크립트가 쓰는 매니페스트로 교체
   const avatars = new Set(
     placements
       .map((p) => p.charId)
