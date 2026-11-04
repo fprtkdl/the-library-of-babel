@@ -11,3 +11,8 @@
 .tile_forbidden { background: var(--tile-none); }
 .tile_start { background: var(--tile-start); }
 .tile_end { background: var(--tile-end); }
+.vacated {
+  position: absolute; inset: 1px; display: grid; place-items: center;
+  outline: 2px dashed var(--accent); outline-offset: -2px;
+  font: 700 10px/1 var(--font-body); color: var(--accent); background: rgba(0, 0, 0, 0.35);
+}

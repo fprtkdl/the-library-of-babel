@@ -8,22 +8,24 @@ export function StageBoard({
   placements,
   avatars,
   highlight,
+  vacated,
 }: {
   board: Board;
   placements: Placement[];
   avatars: ReadonlySet<string>;
   highlight?: number;
+  vacated?: { x: number; y: number }; // 방금 철수한 칸
 }) {
   return (
     <div className={styles.board} style={{ gridTemplateColumns: `repeat(${board.width}, var(--cell))` }}>
       {board.tiles.flatMap((row, y) =>
         row.map((tile, x) => {
-          // shortcut: 한 칸에 배치 하나만 표시(첫 번째), 철수 후 재배치는 MAA 호환 작업(Retreat)에서 처리
           const p = placements.find((q) => q.x === x && q.y === y);
           const cls = [styles.tile, styles[tile.key], tile.height === "HIGHLAND" && styles.high].filter(Boolean).join(" ");
           return (
             <div key={`${x},${y}`} className={cls} title={`${tile.key} [${x}, ${y}]`}>
               {p && <DeployMarker placement={p} hasAvatar={avatars.has(p.charId)} active={p.order === highlight} />}
+              {!p && vacated?.x === x && vacated?.y === y && <span className={styles.vacated}>철수</span>}
             </div>
           );
         }),

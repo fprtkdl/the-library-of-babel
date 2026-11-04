@@ -2,12 +2,23 @@
 
 import { useCallback, useEffect, useMemo, useState } from "react";
 import type { StageBoard as Board } from "@/lib/board";
-import { placementsUpTo, type Placement } from "@/lib/strategy";
+import { frameAt, type Member, type Step } from "@/lib/strategy";
 import { StageBoard } from "./StageBoard";
+import { WaitingBench } from "./WaitingBench";
 import styles from "./BoardPlayer.module.css";
 
-export function BoardPlayer({ board, placements, avatars }: { board: Board; placements: Placement[]; avatars: string[] }) {
-  const total = placements.length;
+export function BoardPlayer({
+  board,
+  steps,
+  squad,
+  avatars,
+}: {
+  board: Board;
+  steps: Step[];
+  squad: Member[];
+  avatars: string[];
+}) {
+  const total = steps.length;
   const [step, setStep] = useState(total); // 첫 화면은 완성 보드
   const avatarSet = useMemo(() => new Set(avatars), [avatars]);
   // 함수형 업데이트: 연타해도 렌더 전 옛 step을 읽지 않음
@@ -23,14 +34,19 @@ export function BoardPlayer({ board, placements, avatars }: { board: Board; plac
     return () => window.removeEventListener("keydown", onKey);
   }, [move]);
 
+  const { field, waiting, current } = frameAt(steps, squad, step);
+  const retreat = current?.kind === "retreat" ? current.placement : undefined;
+
   return (
     <div>
       <StageBoard
         board={board}
-        placements={placementsUpTo(placements, step)}
+        placements={field}
         avatars={avatarSet}
-        highlight={step > 0 ? step : undefined}
+        highlight={current?.kind === "deploy" ? current.placement.order : undefined}
+        vacated={retreat}
       />
+      <WaitingBench waiting={waiting} avatars={avatarSet} highlight={retreat?.name} />
       <div className={styles.controls}>
         <button type="button" className="btn btn-ghost" onClick={() => move(-1)} disabled={step === 0}>
           <strong>◀ 이전</strong>
