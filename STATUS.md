@@ -26,6 +26,7 @@
 - [x] 최종 리뷰 및 브라우저 확인
 - [x] 시각 디자인: 게임 UI 톤(C안) + 시안 `#2fb6e8` 포인트, 토큰은 `app/globals.css` (`docs/superpowers/specs/2026-11-04-visual-design.md`)
 - [x] 단계 재생(B): 이전/다음/처음으로 + ←/→ 키, 첫 화면은 완성 보드 (`docs/superpowers/specs/2026-11-04-step-playback-design.md`)
+- [x] 철수·재배치 + 대기열: MAA `Retreat` 지원, 보드 아래 대기/재배치 대기 표시 (`docs/superpowers/specs/2026-11-04-retreat-waiting-design.md`). 재배치 쿨타임 숫자는 공략 데이터에 시간 정보가 없어 미표시
 
 ## 다음에 할 일
 
@@ -36,7 +37,7 @@
 
 - 업로드 공략 런타임 스키마 검증, 크기 제한
 - 근접/원거리 타일 검증 (character_table position)
-- MAA 호환: direction "None", groups 이름, Retreat
+- MAA 호환: direction "None", groups 이름 (Retreat는 지원 완료)
 - avatar 매니페스트 (페이지가 동적 렌더링될 때)
 - DeployMarker aria-label에 `role="img"`
 
