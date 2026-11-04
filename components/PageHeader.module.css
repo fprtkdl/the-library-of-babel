@@ -1,0 +1,4 @@
+.header { background: var(--paper); color: var(--ink); padding: 16px 16px 14px; }
+.header :global(.label-en) { color: var(--ink-2); }
+.title { margin-top: 2px; font: 700 28px/1.1 var(--font-display); }
+.sub { margin-top: 4px; font-size: 12px; color: #333; }

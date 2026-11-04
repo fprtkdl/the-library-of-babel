@@ -1,6 +1,7 @@
 import { existsSync } from "node:fs";
 import path from "node:path";
 import { notFound } from "next/navigation";
+import { PageHeader } from "@/components/PageHeader";
 import { StageBoard } from "@/components/StageBoard";
 import type { StageBoard as Board } from "@/lib/board";
 import { toPlacements, type Copilot } from "@/lib/strategy";
@@ -27,11 +28,12 @@ export default async function StagePage({ params }: { params: Promise<{ stageId:
   );
 
   return (
-    <main style={{ padding: 16 }}>
-      <h1>1-7</h1>
-      <p>{sample.doc.title}</p>
-      <StageBoard board={board as Board} placements={placements} avatars={avatars} />
-      <footer style={{ marginTop: 16, fontSize: 12, opacity: 0.7 }}>
+    <main>
+      <PageHeader label="STAGE DATA / 01-07" title={`1-7 · ${sample.doc.title}`} sub={`배치 ${placements.length}`} />
+      <section style={{ padding: 16 }}>
+        <StageBoard board={board as Board} placements={placements} avatars={avatars} />
+      </section>
+      <footer className="label-en" style={{ padding: "0 16px 16px", color: "var(--line-2)", letterSpacing: 0 }}>
         비공식 팬 사이트. 데이터 출처: 명일방주 인게임 정보.
       </footer>
     </main>

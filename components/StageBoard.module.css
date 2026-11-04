@@ -1,9 +1,13 @@
-.board { --cell: clamp(24px, 7vw, 64px); display: grid; gap: 2px; padding: 8px; background: #1b1d22; width: max-content; max-width: 100%; }
-.tile { width: var(--cell); height: var(--cell); background: #3a3d44; }
-.high { box-shadow: inset 0 -4px 0 rgba(0, 0, 0, 0.35); }
-.tile_road { background: #8a8f99; }
-.tile_wall { background: #5d7a99; }
-.tile_floor { background: #55585f; }
-.tile_forbidden { background: #26282d; }
-.tile_start { background: #b8433a; }
-.tile_end { background: #3a6fb8; }
+.board {
+  --cell: clamp(24px, 7vw, 64px);
+  display: grid; gap: 2px; padding: 8px; width: max-content; max-width: 100%;
+  background: var(--dark); outline: 1px solid var(--line);
+}
+.tile { position: relative; width: var(--cell); height: var(--cell); background: var(--tile-none); }
+.high { box-shadow: inset 0 -3px 0 rgba(0, 0, 0, 0.3); }
+.tile_road { background: var(--tile-road); }
+.tile_wall { background: var(--tile-wall); }
+.tile_floor { background: var(--tile-floor); }
+.tile_forbidden { background: var(--tile-none); }
+.tile_start { background: var(--tile-start); }
+.tile_end { background: var(--tile-end); }
