@@ -1,13 +1,16 @@
 import type { StageBoard } from "./board";
+import { describeEnd, describeUse, toEnd, toUse, type EndCondition, type SkillAction, type UseCondition } from "./skill";
 
 export type Direction = "Left" | "Right" | "Up" | "Down";
 export type Placement = { order: number; charId: string; name: string; x: number; y: number; direction: Direction };
 export type Copilot = {
   stage_name: string;
   opers: { name: string; skill?: number }[];
-  actions: { type?: string; name?: string; location?: [number, number]; direction?: string }[];
+  actions: ({ type?: string; name?: string; location?: [number, number]; direction?: string } & SkillAction)[];
 };
-export type Step = { kind: "deploy" | "retreat"; placement: Placement };
+export type Step =
+  | { kind: "deploy" | "retreat"; placement: Placement }
+  | { kind: "skill"; placement: Placement; use: UseCondition; end?: EndCondition };
 export type Member = { name: string; charId: string };
 export type Waiting = Member & { state: "대기" | "재배치 대기" };
 export type Frame = { field: Placement[]; waiting: Waiting[]; current?: Step };
@@ -15,8 +18,9 @@ export type Frame = { field: Placement[]; waiting: Waiting[]; current?: Step };
 const DIRECTIONS: string[] = ["Left", "Right", "Up", "Down"];
 const DEPLOY = ["Deploy", "部署"]; // MAA는 type 생략 시 Deploy
 const RETREAT = ["Retreat", "撤退"];
+const SKILL = ["Skill", "技能"];
 
-// 배치·철수를 필드 상태와 함께 재생하며 검증한다. 그 외 액션(스킬, 배속 등)은 무시.
+// 배치·철수·스킬을 필드 상태와 함께 재생하며 검증한다. 그 외 액션(배속, 스킬 자동 설정 등)은 무시.
 export function toSteps(copilot: Copilot, board: StageBoard, operators: Record<string, string>): Step[] {
   const field = new Map<string, Placement>(); // 이름 → 현재 배치
   const steps: Step[] = [];
@@ -45,6 +49,10 @@ export function toSteps(copilot: Copilot, board: StageBoard, operators: Record<s
       if (!target) throw new Error(`철수 대상 없음: ${a.name ?? `[${a.location?.join(", ")}]`}`);
       field.delete(target.name);
       steps.push({ kind: "retreat", placement: target });
+    } else if (SKILL.includes(type)) {
+      const target = field.get(a.name ?? "");
+      if (!target) throw new Error(`스킬 대상 없음: ${a.name}`);
+      steps.push({ kind: "skill", placement: target, use: toUse(a, operators), end: toEnd(a, operators) });
     }
   }
   return steps;
@@ -62,7 +70,7 @@ export function frameAt(steps: Step[], squad: Member[], k: number): Frame {
   const retreated = new Set<string>();
   for (const s of steps.slice(0, k)) {
     if (s.kind === "deploy") field.set(s.placement.name, s.placement);
-    else {
+    else if (s.kind === "retreat") {
       field.delete(s.placement.name);
       retreated.add(s.placement.name);
     }
@@ -71,4 +79,13 @@ export function frameAt(steps: Step[], squad: Member[], k: number): Frame {
     .filter((m) => !field.has(m.name))
     .map((m): Waiting => ({ ...m, state: retreated.has(m.name) ? "재배치 대기" : "대기" }));
   return { field: [...field.values()], waiting, current: k > 0 ? steps[k - 1] : undefined };
+}
+
+const ARROW: Record<Direction, string> = { Left: "←", Right: "→", Up: "↑", Down: "↓" };
+
+export function describeStep(s: Step, n: number): string {
+  const { name, x, y, direction } = s.placement;
+  if (s.kind === "skill") return `${n}단계 · ${name} 스킬 — ${describeUse(s.use)} · ${describeEnd(s.end)}`;
+  if (s.kind === "retreat") return `${n}단계 · ${name} 철수`;
+  return `${n}단계 · ${name} 배치 [${x}, ${y}] ${ARROW[direction]}`;
 }

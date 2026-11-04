@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import type { StageBoard, Tile } from "./board";
-import { frameAt, toPlacements, toSteps, type Copilot } from "./strategy";
+import { describeStep, frameAt, toPlacements, toSteps, type Copilot } from "./strategy";
 
 const road: Tile = { key: "tile_road", height: "LOWLAND", buildable: "MELEE" };
 const wall: Tile = { key: "tile_wall", height: "HIGHLAND", buildable: "RANGED" };
@@ -76,7 +76,7 @@ const seq = copilot([
   { name: "克洛丝", location: [0, 0], direction: "Down" },
   { name: "芬", location: [1, 1], direction: "Right" },
   { type: "Retreat", name: "芬" },
-  { type: "Skill", name: "克洛丝" },
+  { type: "SkillUsage", name: "克洛丝" },
   { name: "芬", location: [2, 1], direction: "Left" },
   { type: "Retreat", location: [0, 0] },
 ]);
@@ -141,5 +141,40 @@ describe("frameAt", () => {
     const f = frameAt(steps, squad, 4);
     expect(f.field.find((p) => p.name === "芬")).toMatchObject({ x: 2, y: 1, order: 3 });
     expect(f.waiting).toEqual([]);
+  });
+});
+
+describe("스킬 단계", () => {
+  const withSkill = copilot([
+    { name: "芬", location: [1, 1], direction: "Right" },
+    { type: "Skill", name: "芬", kills: 5 },
+    { type: "Skill", name: "芬", babel: { use: { type: "now" }, end: { type: "attacks", n: 3 } } },
+    { type: "SkillUsage", name: "芬" },
+  ]);
+
+  it("Skill 액션을 단계로 만들고 조건을 붙인다, 필드는 그대로", () => {
+    const steps = toSteps(withSkill, board, ops);
+    expect(steps.map((s) => s.kind)).toEqual(["deploy", "skill", "skill"]);
+    expect(steps[1]).toMatchObject({ kind: "skill", use: { type: "kills", n: 5 } });
+    expect(steps[2]).toMatchObject({ use: { type: "now" }, end: { type: "attacks", n: 3 } });
+    expect(frameAt(steps, [], 3).field.map((p) => p.name)).toEqual(["芬"]);
+  });
+
+  it("필드에 없는 오퍼레이터 스킬은 에러", () => {
+    expect(() => toSteps(copilot([{ type: "Skill", name: "芬" }]), board, ops)).toThrow("스킬 대상 없음: 芬");
+  });
+
+  it("단계 설명 문구", () => {
+    const steps = toSteps(
+      copilot([...withSkill.actions.slice(0, 3), { type: "Retreat", name: "芬" }]),
+      board,
+      ops,
+    );
+    expect(steps.map((s, i) => describeStep(s, i + 1))).toEqual([
+      "1단계 · 芬 배치 [1, 1] →",
+      "2단계 · 芬 스킬 — 처치 수 5 달성 시 · 자동 종료",
+      "3단계 · 芬 스킬 — 즉시 사용 · 3회 공격 후 종료",
+      "4단계 · 芬 철수",
+    ]);
   });
 });
