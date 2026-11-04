@@ -27,6 +27,7 @@
 - [x] 시각 디자인: 게임 UI 톤(C안) + 시안 `#2fb6e8` 포인트, 토큰은 `app/globals.css` (`docs/superpowers/specs/2026-11-04-visual-design.md`)
 - [x] 단계 재생(B): 이전/다음/처음으로 + ←/→ 키, 첫 화면은 완성 보드 (`docs/superpowers/specs/2026-11-04-step-playback-design.md`)
 - [x] 철수·재배치 + 대기열: MAA `Retreat` 지원, 보드 아래 대기/재배치 대기 표시 (`docs/superpowers/specs/2026-11-04-retreat-waiting-design.md`). 재배치 쿨타임 숫자는 공략 데이터에 시간 정보가 없어 미표시
+- [x] 스킬 사용·종료 타이밍: 사용 조건 8종(즉시, 처치 수, 코스트, 적 등장, 아군 퇴각, 스킬 범위, 공격 사거리, 직접 입력), 종료 조건 6종(없으면 자동 종료). MAA `Skill` + 사이트 전용 `babel` 필드 (`docs/superpowers/specs/2026-11-04-skill-timing-design.md`)
 
 ## 다음에 할 일
 
@@ -37,7 +38,7 @@
 
 - 업로드 공략 런타임 스키마 검증, 크기 제한
 - 근접/원거리 타일 검증 (character_table position)
-- MAA 호환: direction "None", groups 이름 (Retreat는 지원 완료)
+- MAA 호환: direction "None", groups 이름 (Retreat·Skill은 지원 완료). `babel` 필드를 MAA가 무시하는지 미검증
 - avatar 매니페스트 (페이지가 동적 렌더링될 때)
 - DeployMarker aria-label에 `role="img"`
 
