@@ -25,10 +25,11 @@
 - [x] 구현: 1-7 정적 보드 구현 완료, 브랜치 feat/stage-board
 - [x] 최종 리뷰 및 브라우저 확인
 - [x] 시각 디자인: 게임 UI 톤(C안) + 시안 `#2fb6e8` 포인트, 토큰은 `app/globals.css` (`docs/superpowers/specs/2026-11-04-visual-design.md`)
+- [x] 단계 재생(B): 이전/다음/처음으로 + ←/→ 키, 첫 화면은 완성 보드 (`docs/superpowers/specs/2026-11-04-step-playback-design.md`)
 
 ## 다음에 할 일
 
-1. 단계 재생(B) 또는 입력(C) 중 선택
+1. 입력 기능(C): 맵 클릭으로 배치 찍고 저장
 2. GitHub push + PR (main 브랜치는 아직 커밋 없음)
 
 ## 2단계 전 해결할 것
