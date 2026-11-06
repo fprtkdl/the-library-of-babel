@@ -1,7 +1,7 @@
 # 바벨의 도서관 — 작업 현황
 
 > 이 파일만 읽어도 이어서 작업할 수 있도록 유지한다. 작업이 끝날 때마다 갱신.
-> 최종 갱신: 2026-11-04
+> 최종 갱신: 2026-11-05
 
 ## 한 줄 요약
 
@@ -10,14 +10,14 @@
 
 ## 현재 단계
 
-**1단계 정적 보드 구현 완료** (브랜치 `feat/stage-board`, 미푸시).
+**1단계 정적 보드 구현 완료**, `main`에 푸시됨. 브랜치는 `main` 하나만 쓴다 (혼자 개발, PR 없음).
 
 - [x] 아이디어 정리
 - [x] 이름 확정: 바벨의 도서관 (`the-library-of-babel`)
 - [x] GitHub 레포 생성: https://github.com/fprtkdl/the-library-of-babel (빈 레포, 커밋 없음)
 - [x] 로컬 클론: `~/my_projects/the-library-of-babel`
 - [x] 프로토타입 범위 선택: **A. 정적 보드**
-- [x] 기술 스택: **Next.js + Vercel + Supabase + R2** (아래 "확정된 결정")
+- [x] 기술 스택: **Next.js + Vercel Hobby + Supabase**, 이미지는 git에 포함 (아래 "확정된 결정")
 - [x] 데이터 출처 확인 (아래 "데이터 출처")
 - [x] 공략 샘플: Claude가 MAA copilot 형식으로 작성
 - [x] 설계 문서 승인: `docs/superpowers/specs/2026-11-04-stage-board-design.md`
@@ -28,11 +28,13 @@
 - [x] 단계 재생(B): 이전/다음/처음으로 + ←/→ 키, 첫 화면은 완성 보드 (`docs/superpowers/specs/2026-11-04-step-playback-design.md`)
 - [x] 철수·재배치 + 대기열: MAA `Retreat` 지원, 보드 아래 대기/재배치 대기 표시 (`docs/superpowers/specs/2026-11-04-retreat-waiting-design.md`). 재배치 쿨타임 숫자는 공략 데이터에 시간 정보가 없어 미표시
 - [x] 스킬 사용·종료 타이밍: 사용 조건 8종(즉시, 처치 수, 코스트, 적 등장, 아군 퇴각, 스킬 범위, 공격 사거리, 직접 입력), 종료 조건 6종(없으면 자동 종료). MAA `Skill` + 사이트 전용 `babel` 필드 (`docs/superpowers/specs/2026-11-04-skill-timing-design.md`)
+- [x] 게임 이미지 전체를 git에 포함 (2026-11-05): `npm run sync:assets` → `public/assets/{avatar,skill,enemy}`, 4,454파일 151MB. prebuild 다운로드 제거
 
 ## 다음에 할 일
 
-1. 입력 기능(C): 맵 클릭으로 배치 찍고 저장
-2. GitHub push + PR (main 브랜치는 아직 커밋 없음)
+1. 계정·DB: Supabase(서울 리전) + Google 로그인 설계 → 구현. 사용자가 Supabase 프로젝트 생성, `.env.local` 채움
+2. 입력 기능(C): 맵 클릭으로 배치 찍고 저장
+3. Vercel 배포: 계정·GitHub 앱 연동 확인됨(2026-11-05, 팀 `fprtkdl` Hobby). vercel.com/new에서 Import만 누르면 됨. 배포하면 `*.vercel.app`으로 공개되므로 사용자 승인 후
 
 ## 2단계 전 해결할 것
 
@@ -51,9 +53,9 @@
 | 자동화 도구 | 사이트에서 MAA 실행 연동 **안 함** | "사람이 직접 깬 수동 공략만" 정체성. 이용약관 측면에서도 깔끔 |
 | 공략 데이터 형식 | MAA 작업(copilot) JSON 형식을 **참고·호환** | 형식은 "누구를 언제 어디에 어느 방향으로"의 기록일 뿐. 설계 시간 절약 + 기존 공개 공략을 렌더링할 수 있음 |
 | 수익화 | **안 함** | 게임사 저작물 사용 리스크 최소화. 공식 허가 없이 묵인에 기대는 구조 |
-| 기술 스택 | Next.js(App Router, TS) + Vercel | 이후 계정·업로드 단계까지 염두 |
-| 계정·DB | Supabase (2단계부터) | Auth+Postgres 한 곳. Free: DB 500MB, MAU 5만, egress 5GB/월, **1주 비활성 시 정지** |
-| 게임 이미지 | Cloudflare R2, git에 안 넣음 | Free 10GB, egress 무료. 운영엔 커스텀 도메인 필요(r2.dev는 개발용·속도제한). 필요 폴더만(avatar 113MB, skill 30MB) WebP 변환 업로드 |
+| 기술 스택 | Next.js(App Router, TS) + Vercel Hobby | 무료, 카드 불필요, 비상업 개인용만(후원 OK, 광고 불가). 한도 전송 100GB/월·CDN 요청 100만/월, 초과 시 30일 정지·청구 없음. 서울 엣지(icn1) 확인 (2026-11-05) |
+| 계정·DB | Supabase (2단계부터), 리전 서울 | Auth(Google)+Postgres 한 곳. Free: DB 500MB, MAU 5만, egress 5GB/월, **1주 비활성 시 정지**. Storage는 안 씀(egress 부족) |
+| 게임 이미지 | **git에 포함** (`public/assets/`), 별도 저장소 없음 | 유저 업로드 없음 → 배포본에 같이 실으면 끝. R2는 카드 필요, Cloudflare Workers는 계정 추가·이미지 비율 약관 애매, jsDelivr는 남의 호의, Supabase Storage는 egress 부족. `/assets` 캐시 1년 immutable(next.config). 영상은 링크만 |
 | 영상 | YouTube/Bilibili 링크 임베드 | 직접 호스팅은 비용 감당 불가 |
 | 분류 방식 | 고정 카테고리 대신 **태그 + 자동 판정** | 한 클리어가 여러 분류에 동시에 속함 (예: 4인 방치 저스펙) |
 
@@ -89,10 +91,13 @@
   - 1-7: `zh_CN/gamedata/levels/obt/main/level_main_01-07.json` (확인함, 11x7 격자)
   - `mapData.map` = 타일 번호 격자, `mapData.tiles[번호]` = tileKey/높이/배치가능/통과
   - 기믹: 타일 `blackboard`/`effects`, 레벨 `predefines`. 장치 수치는 `excel/character_table.json`의 `trap_*` (미확인)
-- **이미지**: `yuanyan3060/ArknightsGameResource`
-  - 아이콘 `avatar/char_002_amiya.png`, 초상화 `portrait/char_002_amiya_1.png` (확인함)
-  - 스킬 `skill/skill_icon_<iconId>.png` — 파일명은 `excel/skill_table.json`의 iconId 기준
-- **런타임 의존 금지**: 빌드 시 필요한 것만 받아 `public/`에 둔다.
+- **이미지**: `yuanyan3060/ArknightsGameResource` — `npm run sync:assets`로 전체 수동 동기화, 결과물 커밋 (2026-11-05 전수 조사)
+  - 아바타 `avatar/<id>.png`: `character_table` 키 기준. char_(오퍼레이터 467/467) token_(소환물 67/74) trap_(필드 오브젝트·기믹 480/862, 나머지는 원본에 이미지 없음 → 이름 텍스트)
+  - 스킬 `skill/skill_icon_<iconId>.png` — `excel/skill_table.json`의 iconId(없으면 skillId) 기준, 1,639/1,727
+  - 적 `enemy/<enemyId>.png` — `excel/enemy_handbook_table.json`의 `enemyData` 키, 1,801/1,818 79MB (등장 조건 표시용)
+  - 초상화 `portrait/char_002_amiya_1.png` 161MB, 스테이지 미리보기 `map/<stageId>.png` 3,237개 345MB: 안 받음, 필요해지면 쓰는 것만
+  - 원본에 없는 것: 모듈·잠재·신뢰도 아이콘, 타일 텍스처(타일은 CSS로 그림). 모듈 아이콘은 다른 출처 필요
+- **런타임·빌드 시 네트워크 의존 금지**: 이미지는 git에 있다. prebuild 다운로드는 제거했다.
 - **기존 공략**: zoot.plus (예전 prts.plus) — MAA 작업 JSON 공유 사이트.
 
 ## 문제 / 주의사항
