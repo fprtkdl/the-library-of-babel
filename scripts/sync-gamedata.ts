@@ -1,9 +1,8 @@
 import { mkdir, readFile, writeFile } from "node:fs/promises";
-import { downloadAvatars } from "./avatars";
 import { toStageBoard } from "../lib/board";
 import { findCharIds } from "../lib/operators";
+import { GAMEDATA } from "./sources";
 
-const GAMEDATA = "https://raw.githubusercontent.com/Kengxxiao/ArknightsGameData/master/zh_CN/gamedata";
 const STAGE = "main_01-07";
 
 async function get(url: string) {
@@ -21,7 +20,6 @@ async function main() {
   await mkdir("data/stages", { recursive: true });
   await writeFile(`data/stages/${STAGE}.json`, JSON.stringify(toStageBoard(STAGE, level)));
   await writeFile("data/operators.json", JSON.stringify(operators, null, 2) + "\n");
-  await downloadAvatars(Object.values(operators));
   console.log(`synced ${STAGE}`);
 }
 

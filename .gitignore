@@ -41,7 +41,5 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
-# 게임 이미지: sync 스크립트가 받아옴, git에 안 넣음
-/public/assets/
 /.vitest/
 /.superpowers/
