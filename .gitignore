@@ -43,3 +43,6 @@ next-env.d.ts
 
 /.vitest/
 /.superpowers/
+
+# 게임 데이터 원본 캐시 (npm run sync)
+/.cache/

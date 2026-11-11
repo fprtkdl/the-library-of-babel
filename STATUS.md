@@ -1,7 +1,7 @@
 # 바벨의 도서관 — 작업 현황
 
 > 이 파일만 읽어도 이어서 작업할 수 있도록 유지한다. 작업이 끝날 때마다 갱신.
-> 최종 갱신: 2026-11-05
+> 최종 갱신: 2026-11-08
 
 ## 한 줄 요약
 
@@ -15,7 +15,7 @@
 - [x] 아이디어 정리
 - [x] 이름 확정: 바벨의 도서관 (`the-library-of-babel`)
 - [x] GitHub 레포 생성: https://github.com/fprtkdl/the-library-of-babel (빈 레포, 커밋 없음)
-- [x] 로컬 클론: `~/my_projects/the-library-of-babel`
+- [x] 로컬 클론: `~/orca/the-library-of-babel`
 - [x] 프로토타입 범위 선택: **A. 정적 보드**
 - [x] 기술 스택: **Next.js + Vercel Hobby + Supabase**, 이미지는 git에 포함 (아래 "확정된 결정")
 - [x] 데이터 출처 확인 (아래 "데이터 출처")
@@ -29,10 +29,13 @@
 - [x] 철수·재배치 + 대기열: MAA `Retreat` 지원, 보드 아래 대기/재배치 대기 표시 (`docs/superpowers/specs/2026-11-04-retreat-waiting-design.md`). 재배치 쿨타임 숫자는 공략 데이터에 시간 정보가 없어 미표시
 - [x] 스킬 사용·종료 타이밍: 사용 조건 8종(즉시, 처치 수, 코스트, 적 등장, 아군 퇴각, 스킬 범위, 공격 사거리, 직접 입력), 종료 조건 6종(없으면 자동 종료). MAA `Skill` + 사이트 전용 `babel` 필드 (`docs/superpowers/specs/2026-11-04-skill-timing-design.md`)
 - [x] 게임 이미지 전체를 git에 포함 (2026-11-05): `npm run sync:assets` → `public/assets/{avatar,skill,enemy}`, 4,454파일 151MB. prebuild 다운로드 제거
+- [x] Supabase 프로젝트 생성 (2026-11-08): `the-library-of-babel`, fprtkdl's Org, 서울(ap-northeast-2), Free, 자동 RLS 켬. URL·publishable key·DB 비밀번호는 `.env.local`. 신규 키 체계 publishable/secret 사용 (legacy anon/service_role은 2027년 초 폐지 예정)
+- [x] 전 스테이지 목록·검색 (2026-11-08): `npm run sync`가 메인·이벤트·섬멸전 2,183개 보드(20MB) + `data/stages/index.json`(한국어 이름, 존, 하드 표시) 생성. `/stages`는 검색창 + 탭(메인/이벤트/섬멸전) + 챕터 레일 + 카드 그리드(`components/StageBrowser.tsx`). 한국 서버 미출시(중국 선행) 스테이지는 목록에서 숨김. 보드 페이지 전부 정적 생성, 공략 없는 스테이지는 빈 보드. 설계: `docs/superpowers/specs/2026-11-08-stage-browser-design.md`. 원본 캐시 `.cache/gamedata/`(331MB, gitignore)
 
 ## 다음에 할 일
 
-1. 계정·DB: Supabase(서울 리전) + Google 로그인 설계 → 구현. 사용자가 Supabase 프로젝트 생성, `.env.local` 채움
+0. 스테이지 목록 UI 사용자 확인 후 조정 (1차 피드백 "구리다·한자" 반영해 탭+레일로 재작성, 2차 확인 대기). 하드 모드 진입 URL, 중국 선행 보기 토글은 미정
+1. Google 로그인: Google Cloud에 OAuth 클라이언트 생성 (리디렉션 URI `https://vzswlcxnbxwosjbzmegi.supabase.co/auth/v1/callback`) → Supabase Authentication > Providers > Google에 Client ID/Secret 입력 → 앱 로그인 설계·구현
 2. 입력 기능(C): 맵 클릭으로 배치 찍고 저장
 3. Vercel 배포: 계정·GitHub 앱 연동 확인됨(2026-11-05, 팀 `fprtkdl` Hobby). vercel.com/new에서 Import만 누르면 됨. 배포하면 `*.vercel.app`으로 공개되므로 사용자 승인 후
 

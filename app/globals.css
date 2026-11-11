@@ -86,3 +86,9 @@ a {
 .tag { display: inline-block; padding: 2px 8px; font: 700 11px/1.5 var(--font-body); }
 .tag-on { background: var(--accent); color: var(--on-accent); }
 .tag-off { color: var(--text); box-shadow: inset 0 0 0 1px var(--line-2); }
+
+/* 넓은 화면에서 본문이 퍼지지 않게. 헤더 띠도 같은 폭 */
+main {
+  max-width: 1280px;
+  margin: 0 auto;
+}
